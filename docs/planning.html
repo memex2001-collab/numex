@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kreativitäts-App-Netzwerk — Gesamtplan</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#f7f6f1;color:#1c1b18;padding:2rem 1rem;max-width:800px;margin:0 auto}
+h1{font-size:1.5rem;font-weight:700;margin-bottom:.5rem}
+h2{font-size:1.1rem;font-weight:600;margin:2rem 0 .75rem;color:#534AB7}
+table{width:100%;border-collapse:collapse;font-size:.85rem;margin-bottom:1.5rem}
+th{text-align:left;padding:.5rem .75rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:#6b6960;border-bottom:1px solid #e2e0d8}
+td{padding:.6rem .75rem;border-bottom:1px solid #e2e0d8;color:#6b6960}
+td:first-child{font-weight:500;color:#1c1b18}
+.badge{display:inline-block;padding:.15rem .6rem;border-radius:20px;font-size:.7rem;font-weight:500}
+.bp{background:#EEEDFE;color:#3C3489}.bt{background:#E1F5EE;color:#085041}
+.ba{background:#FAEEDA;color:#633806}.bb{background:#E6F1FB;color:#0C447C}
+.bg{background:#F1EFE8;color:#444441}
+.note{border:1px solid #e2e0d8;border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;background:#fff;font-size:.85rem;color:#6b6960}
+</style>
+</head>
+<body>
+<h1>Kreativitäts-App-Netzwerk — Gesamtplan</h1>
+<p style="color:#6b6960;font-size:.9rem;margin-bottom:2rem">Strategie, Architektur &amp; Aufgabenlisten · Vier Phasen von der Pilotapp bis zur Plattform</p>
+
+<h2>Phasenübersicht</h2>
+<table>
+<thead><tr><th>Phase</th><th>Schwerpunkt</th><th>Schlüssel-Deliverable</th><th>Dauer</th></tr></thead>
+<tbody>
+<tr><td><span class="badge bp">Phase 1</span></td><td>Template &amp; Pilotapp (SCAMPER)</td><td>Fertige App + Design-System + Template</td><td>6 Wochen</td></tr>
+<tr><td><span class="badge bt">Phase 2</span></td><td>5 weitere Methoden-Apps (+1 optional)</td><td>5–6 Apps + Master-Prompt-Bibliothek</td><td>16–20 Wochen</td></tr>
+<tr><td><span class="badge ba">Phase 3</span></td><td>3 Bundles + Dashboard</td><td>Vernetztes Netzwerk mit Sitzungsübergabe</td><td>10–12 Wochen</td></tr>
+<tr><td><span class="badge bb">Phase 4</span></td><td>Feedback, Export, Kollaboration</td><td>Öffentlich nutzbares, skalierbares Produkt</td><td>12–16 Wochen</td></tr>
+</tbody>
+</table>
+
+<h2>Tech-Stack</h2>
+<div class="note">
+<strong>Frontend:</strong> React 19 + TypeScript + Vite 6 + Tailwind CSS 4 + React Router 7<br>
+<strong>Backend:</strong> Node.js + Express 5 + @anthropic-ai/sdk + SSE-Streaming<br>
+<strong>Modell:</strong> claude-sonnet-4-20250514<br>
+<strong>Datenbank (Phase 4):</strong> Supabase (opt-in)<br>
+<strong>Deployment:</strong> Hostinger VPS + Nginx + Let's Encrypt
+</div>
+
+<h2>Phase 2 — Methoden-Apps</h2>
+<table>
+<thead><tr><th>App</th><th>Methode</th><th>Zeitraum</th><th>Besonderheit</th></tr></thead>
+<tbody>
+<tr><td><span class="badge bt">App 2</span></td><td>Brainstorming</td><td>W 1–2</td><td>Chip-Input-Komponente</td></tr>
+<tr><td><span class="badge bt">App 3</span></td><td>Six Thinking Hats</td><td>W 3–4</td><td>Rollenwechsel-UI, Hut-Farbwechsel</td></tr>
+<tr><td><span class="badge bp">App 4</span></td><td>Mind Mapping</td><td>W 5–7</td><td>react-flow Visualisierung</td></tr>
+<tr><td><span class="badge ba">App 5</span></td><td>Story Spine</td><td>W 8–9</td><td>Ko-Autor-Modus</td></tr>
+<tr><td><span class="badge ba">App 6</span></td><td>Brainwriting 6-3-5</td><td>W 10–11</td><td>3 Personas, 3 Runden</td></tr>
+<tr><td><span class="badge bg">App 7</span></td><td>Ishikawa (optional)</td><td>W 12–14</td><td>SVG-Fischgräten-Diagramm</td></tr>
+</tbody>
+</table>
+
+<h2>Phase 3 — Bundles</h2>
+<div class="note">
+<strong>Bundle 1 — Ideation Suite:</strong> Brainstorming → SCAMPER → Brainwriting<br>
+<strong>Bundle 2 — Entscheidungs-Navigator:</strong> (Ishikawa →) Six Hats → Mind Mapping<br>
+<strong>Bundle 3 — Story Toolkit:</strong> Brainstorming → Story Spine
+</div>
+
+<h2>Qualitätsziele (Phase 4)</h2>
+<table>
+<thead><tr><th>Kennzahl</th><th>Zielwert</th></tr></thead>
+<tbody>
+<tr><td>Abschlussrate</td><td>≥ 75 % aller Sitzungen erreichen Reflexionsmodul</td></tr>
+<tr><td>Sitzungsbewertung</td><td>Ø ≥ 4,0 von 5 Sternen</td></tr>
+<tr><td>Bundle-Nutzung</td><td>≥ 30 % der Nutzer starten ein Bundle</td></tr>
+<tr><td>Wiederkehrende Nutzer</td><td>≥ 40 % kehren für zweite Sitzung zurück</td></tr>
+<tr><td>Ladezeit (LCP)</td><td>&lt; 2,5 Sekunden auf mobilem Netz</td></tr>
+<tr><td>Accessibility</td><td>WCAG 2.1 AA — alle kritischen Fehler behoben</td></tr>
+</tbody>
+</table>
+
+<p style="color:#9c9a92;font-size:.75rem;margin-top:2rem">
+Dieses Dokument ist eine kompakte Referenz des vollständigen Gesamtplans.
+Die interaktive Version mit Aufgaben-Tracking befindet sich separat.
+</p>
+</body>
+</html>
