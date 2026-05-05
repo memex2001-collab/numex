@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Primärfarbe: Amber/Gold ───────────────────────────── */
+  --color-p1:   #BA7517;
+  --color-p1-l: #FAEEDA;
+  --color-p1-d: #633806;
+
+  /* ── Sekundärfarbe: Lila ───────────────────────────────── */
+  --color-p2:   #534AB7;
+  --color-p2-l: #EEEDFE;
+  --color-p2-d: #3C3489;
+
+  /* ── Akzent: Tiefblau ──────────────────────────────────── */
+  --color-p3:   #185FA5;
+  --color-p3-l: #E6F1FB;
+  --color-p3-d: #0C447C;
+
+  /* ── Semantische Farben ────────────────────────────────── */
+  --color-coral:   #993C1D;
+  --color-coral-l: #FAECE7;
+  --color-gruen:   #3B6D11;
+  --color-gruen-l: #EAF3DE;
+
+  /* ── Hintergrund & Oberflächen ─────────────────────────── */
+  --color-bg:       #f7f6f1;
+  --color-surface:  #ffffff;
+  --color-surface2: #f0efe9;
+
+  /* ── Ränder ────────────────────────────────────────────── */
+  --color-border:  #e2e0d8;
+  --color-border2: #d0cec5;
+
+  /* ── Text-Hierarchie ───────────────────────────────────── */
+  --color-text:    #1c1b18;
+  --color-text2:   #6b6960;
+  --color-text3:   #9c9a92;
+
+  /* ── Schriften ─────────────────────────────────────────── */
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'DM Mono', ui-monospace, 'Courier New', monospace;
+
+  /* ── Schatten ──────────────────────────────────────────── */
+  --shadow-karte: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+}
+
+@layer base {
+  html {
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    min-height: 100dvh;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-p1);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  * {
+    transition-property: background-color, border-color, color;
+    transition-duration: 150ms;
+    transition-timing-function: ease;
+  }
+}
+
+@layer utilities {
+  .tipp-cursor::after {
+    content: '|';
+    display: inline-block;
+    margin-left: 1px;
+    animation: blinken 1s step-end infinite;
+    color: var(--color-p1);
+  }
+
+  @keyframes blinken {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  .einblenden {
+    animation: einblenden 300ms ease-out;
+  }
+
+  @keyframes einblenden {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}
