@@ -1,7 +1,8 @@
-# Konzept: Schwarz-Weiß-Kamera-App für iOS
+# Konzept: Cappuccino – Schwarz-Weiß-Kamera-App für iOS
 
-> Arbeitstitel: **„Silber“** (nach dem Silberhalogenid klassischer S/W-Filme)
-> Status: Konzeptentwurf · Plattform: iPhone (iOS 17+)
+> App-Name: **Cappuccino**
+> Status: Konzept, Entscheidungen festgelegt · Plattform: iPhone (iOS 17+), nur Rückkamera
+> Nicht kommerziell: kein Geschäftsmodell, keine Vermarktung
 
 ---
 
@@ -37,21 +38,24 @@ festgelegt – nicht danach.
 
 1. **Live-Sucher in Schwarz-Weiß** (Vollbild, mit aktivem Filter in Echtzeit)
 2. **Filterauswahl vor der Aufnahme** (8 Filter, siehe Kapitel 6)
-3. **Auslöser** (Bildschirm-Button + Lautstärketasten)
-4. **Speichern in die Foto-Mediathek** als S/W-HEIC in voller Auflösung
-5. **Tippen zum Fokussieren/Belichten** (systemübliches Kameraverhalten, kein Bedienelement)
-6. **Letzter Filter wird gemerkt**
+3. **Zwei Seitenverhältnisse:** 4:3 (Standard) und 1:1 (quadratisch), Wahl vor der Aufnahme
+4. **Auslöser** (Bildschirm-Button + Lautstärketasten)
+5. **Speichern in die Foto-Mediathek** als S/W-HEIC in voller Auflösung
+6. **Tippen zum Fokussieren/Belichten** (systemübliches Kameraverhalten, kein Bedienelement)
+7. **Letzter Filter und letztes Format werden gemerkt**
+8. **Nur Rückkamera** (Haupt-Weitwinkelkamera)
 
 ### 4.2 Kann (nach MVP, nur wenn es den Minimalismus nicht bricht)
 
 - Steuerung der Filter über die **Kamerasteuerungstaste** (iPhone 16 und neuer, iOS 18)
 - **Kamera vom Sperrbildschirm** starten (LockedCameraCapture, iOS 18)
-- Wechsel Front-/Rückkamera per Doppeltipp auf den Sucher
 - Kleine Vorschau des letzten Fotos, die direkt die Fotos-App öffnet
 
 ### 4.3 Bewusst nicht enthalten
 
 - Farbaufnahmen oder Speichern des Farboriginals
+- Frontkamera / Selfies
+- Weitere Formate außer 4:3 und 1:1 (z. B. 16:9)
 - Nachträgliche Bearbeitung, Regler, Zuschneiden
 - Eigene Galerie, Alben-Verwaltung, Teilen-Funktionen
 - Video, Live Photos, Porträtmodus, RAW
@@ -63,7 +67,7 @@ festgelegt – nicht danach.
 
 ```
 ┌──────────────────────────────┐
-│                              │
+│             4:3              │  ← Formatumschalter (Tippen: 4:3 ↔ 1:1)
 │                              │
 │                              │
 │         LIVE-SUCHER          │
@@ -80,32 +84,63 @@ festgelegt – nicht danach.
 └──────────────────────────────┘
 ```
 
-Sichtbar sind dauerhaft nur **Sucher** und **Auslöser**. Filtername und Punkte-Indikator erscheinen
-beim Filterwechsel und blenden danach dezent aus.
+Sichtbar sind dauerhaft nur **Sucher**, **Auslöser** und ein kleines **Format-Label** („4:3“ bzw.
+„1:1“) am oberen Rand. Filtername und Punkte-Indikator erscheinen beim Filterwechsel und blenden
+danach dezent aus.
 
-### 5.2 Gesten
+### 5.2 Quadratisches Format (1:1)
+
+```
+┌──────────────────────────────┐
+│             1:1              │
+│▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│  ← schwarze Maske
+│                              │
+│                              │
+│        QUADRATISCHER         │
+│          BILDAUSSCHNITT      │
+│                              │
+│                              │
+│▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│  ← schwarze Maske
+│           ORANGE             │
+│            ( ◯ )             │
+└──────────────────────────────┘
+```
+
+- Der Sucher zeigt den **exakten quadratischen Ausschnitt**; die Bereiche außerhalb werden schwarz
+  maskiert (weiche Überblendung beim Umschalten, ca. 0,25 s).
+- Das Quadrat wird **mittig aus dem 4:3-Sensorbild** geschnitten (z. B. 12 MP 4032 × 3024 →
+  3024 × 3024 px). Es wird nicht hochskaliert.
+- Gespeichert wird **nur der quadratische Ausschnitt**, der Rest wird verworfen – konsequent wie
+  beim Filter: Die Entscheidung fällt vor der Aufnahme.
+- Das Format ist **unabhängig vom Filter**: Alle 8 Filter funktionieren in beiden Formaten.
+
+### 5.3 Gesten
 
 | Geste | Aktion |
 |---|---|
 | Horizontal wischen auf dem Sucher | Nächster / vorheriger Filter |
+| Tippen auf das Format-Label | Umschalten 4:3 ↔ 1:1 |
 | Tippen auf den Sucher | Fokus- und Belichtungspunkt setzen |
 | Lang drücken auf den Sucher | Fokus/Belichtung sperren (AE/AF-Lock) |
 | Vertikal ziehen nach dem Tippen | Belichtungskorrektur (± 2 EV) |
 | Tippen auf Auslöser / Lautstärketaste | Foto aufnehmen |
 | Kamerasteuerungstaste (iPhone 16+) | Gleiten = Filter wählen, Drücken = Auslösen |
 
-### 5.3 Feedback
+### 5.4 Feedback
 
-- **Haptik:** leichtes „Klicken“ bei jedem Filterwechsel, kräftigeres Feedback beim Auslösen
+- **Haptik:** leichtes „Klicken“ bei jedem Filter- und Formatwechsel, kräftigeres Feedback beim Auslösen
 - **Auslöse-Animation:** kurzes Abblenden des Suchers auf Schwarz (wie ein Verschluss)
 - **Kein Ton** außer dem systemseitig vorgeschriebenen Auslösegeräusch
 
-### 5.4 Visuelle Sprache
+### 5.5 Visuelle Sprache
 
 - Farben: ausschließlich `#000000`, `#FFFFFF` und wenige Grautöne
 - Typografie: SF Pro (bzw. SF Mono für den Filternamen), Versalien, weite Laufweite
-- Querformat: Der Sucher dreht nicht, nur Filtername und Auslöser-Beschriftung rotieren mit
-  (wie bei der System-Kamera)
+- Querformat: Der Sucher dreht nicht, nur Filtername, Format-Label und Auslöser-Beschriftung
+  rotieren mit (wie bei der System-Kamera). Bei 4:3 im Querformat entsteht ein Bild im Querformat,
+  bei 1:1 ist die Haltung egal.
+- App-Icon: stilisierte Tasse von oben in Schwarz-Weiß – Milchschaum (Weiß) auf Espresso (Schwarz) als
+  Sinnbild für die beiden Extreme der Graustufenskala
 
 ## 6. Die Filter
 
@@ -149,41 +184,47 @@ wird das über einen **Kanalmischer** (Gewichtung von Rot, Grün, Blau) plus **T
 ### 7.2 Module
 
 ```
-SilberApp
+Cappuccino
 ├── App/                 App-Einstieg, Lebenszyklus
 ├── Camera/
-│   ├── CameraService    Session-Konfiguration, Fokus/Belichtung, Auslösen (eigene Queue/Actor)
+│   ├── CameraService    Session-Konfiguration (nur Rückkamera), Fokus/Belichtung, Auslösen (Actor)
 │   └── CaptureDelegate  Empfang des Fotos in voller Auflösung
 ├── Filters/
 │   ├── MonoFilter       Datenmodell: Name, Gewichte, Tonkurve, Korn
 │   ├── FilterEngine     Wendet einen MonoFilter auf ein CIImage an (rein, testbar)
-│   └── MonoKernel.metal Kanalmischer + Tonkurve + Korn in einem GPU-Durchlauf
+│   ├── MonoKernel.metal Kanalmischer + Tonkurve + Korn in einem GPU-Durchlauf
+│   └── AspectRatio      Format 4:3 / 1:1, berechnet den mittigen Bildausschnitt
 ├── Preview/
-│   └── MetalPreview     MTKView, rendert Videoframes mit aktivem Filter (30–60 fps)
+│   └── MetalPreview     MTKView, rendert Videoframes mit aktivem Filter + Formatmaske (30–60 fps)
 ├── Library/
 │   └── PhotoSaver       Kodierung als S/W-HEIC, Metadaten, Speichern
 └── UI/
     ├── CameraScreen     Der eine Bildschirm
-    └── FilterIndicator  Name + Punkte, Ein-/Ausblenden
+    ├── FilterIndicator  Name + Punkte, Ein-/Ausblenden
+    └── FormatToggle     Label „4:3“ / „1:1“
 ```
 
 ### 7.3 Datenfluss
 
 ```
 Kamera-Sensor
-   ├─► Videoframes ──► FilterEngine ──► MetalPreview (Live-Sucher)
+   ├─► Videoframes ──► FilterEngine ──► Formatmaske ──► MetalPreview (Live-Sucher)
    │
    └─► Auslösen ──► AVCapturePhoto (volle Auflösung, Farbe nur im Arbeitsspeicher)
-                         └─► FilterEngine (gleicher Filter) ──► S/W-HEIC ──► Foto-Mediathek
+                         └─► Zuschnitt (4:3 oder 1:1, mittig)
+                               └─► FilterEngine (gleicher Filter) ──► S/W-HEIC ──► Foto-Mediathek
 ```
 
+- Der **Zuschnitt erfolgt vor dem Filter**, damit nur die tatsächlich gespeicherten Pixel verarbeitet
+  werden (schneller, weniger Speicher).
 - **Ein und dieselbe `FilterEngine`** für Vorschau und Foto garantiert, dass das Ergebnis exakt der
   Vorschau entspricht.
 - Die Farbdaten existieren **nur flüchtig im Arbeitsspeicher**. Gespeichert wird ausschließlich das
   S/W-Bild – das Foto ist damit „echter“ S/W-Film: unumkehrbar.
 - Gespeichert wird als **HEIC, Graustufen-Farbprofil (Gray Gamma 2.2)**: kleinere Dateien, und auch
   andere Apps können keine Farbe „zurückholen“.
-- Metadaten: Standard-EXIF (Belichtung, Brennweite, Datum) + Filtername im Feld `UserComment`.
+- Metadaten: Standard-EXIF (Belichtung, Brennweite, Datum) + Filtername und Format im Feld
+  `UserComment` (z. B. „Cappuccino · Orange · 1:1“).
   Ortsdaten nur, wenn der Nutzer dies in der System-Kamera-Logik erlaubt (Standard: aus).
 
 ### 7.4 Performance-Ziele
@@ -202,17 +243,18 @@ Maßnahmen: Vorschau in reduzierter Auflösung rendern, Korn als vorab berechnet
 
 | Berechtigung | Zweck | Text im Systemdialog (Entwurf) |
 |---|---|---|
-| Kamera | Fotografieren | „Silber benötigt die Kamera, um Schwarz-Weiß-Fotos aufzunehmen.“ |
-| Fotos (nur hinzufügen) | Speichern | „Silber speichert deine Aufnahmen in deiner Mediathek. Lesezugriff ist nicht nötig.“ |
+| Kamera | Fotografieren | „Cappuccino benötigt die Kamera, um Schwarz-Weiß-Fotos aufzunehmen.“ |
+| Fotos (nur hinzufügen) | Speichern | „Cappuccino speichert deine Aufnahmen in deiner Mediathek. Lesezugriff ist nicht nötig.“ |
 
 - **Kein** Lesezugriff auf die Mediathek, **kein** Netzwerkzugriff, **keine** Analytics
-- App-Store-Datenschutzangabe: **„Keine Daten erfasst“**
+- Falls doch einmal über den App Store verteilt: Datenschutzangabe **„Keine Daten erfasst“**
 - Verweigerte Berechtigung: schlichter S/W-Hinweis mit Button zu den Einstellungen
 
 ## 9. Barrierefreiheit
 
 - VoiceOver: Auslöser („Foto aufnehmen“), Filter als anpassbares Element (Wischen hoch/runter wechselt
-  den Filter, Ansage z. B. „Filter Orange, 3 von 8“)
+  den Filter, Ansage z. B. „Filter Orange, 3 von 8“), Format-Label als Schalter
+  („Format quadratisch, Taste“)
 - Dynamic Type für den Filternamen
 - Alle Gesten auch über sichtbare Alternativen erreichbar (Tippen auf Filternamen öffnet kurz die
   Filterleiste)
@@ -224,7 +266,7 @@ Maßnahmen: Vorschau in reduzierter Auflösung rendern, Korn als vorab berechnet
 Kein Onboarding mit mehreren Seiten. Stattdessen:
 
 1. Systemdialog Kamera-Berechtigung
-2. Sucher erscheint sofort, Filter „Neutral“
+2. Sucher erscheint sofort, Filter „Neutral“, Format 4:3
 3. Einmaliger, dezenter Hinweis: „← Wischen für Filter →“ (verschwindet nach erstem Wischen)
 4. Fotos-Berechtigung wird erst beim **ersten Auslösen** angefragt
 
@@ -233,10 +275,14 @@ Kein Onboarding mit mehreren Seiten. Stattdessen:
 | Phase | Inhalt | Dauer (Richtwert) |
 |---|---|---|
 | **0 – Prototyp** | Kamera-Session, Live-Vorschau mit Kanalmischer, Filter-Feintuning an echten Motiven | 1–2 Wochen |
-| **1 – MVP** | Alle 8 Filter, Auslösen, Speichern, Gesten, Haptik, Berechtigungen | 2–3 Wochen |
+| **1 – MVP** | Alle 8 Filter, Formate 4:3 und 1:1, Auslösen, Speichern, Gesten, Haptik, Berechtigungen | 2–3 Wochen |
 | **2 – Feinschliff** | Performance auf Altgeräten, Barrierefreiheit, Querformat, App-Icon, Tests | 1–2 Wochen |
-| **3 – Beta & Release** | TestFlight, Feedback zu Filtern, App-Store-Einreichung | 2 Wochen |
-| **4 – Optional** | Kamerasteuerungstaste, Sperrbildschirm-Kamera, Frontkamera | nach Bedarf |
+| **3 – Beta & Verteilung** | TestFlight im kleinen Kreis, Feedback zu Filtern, Installation auf eigenen Geräten | 1–2 Wochen |
+| **4 – Optional** | Kamerasteuerungstaste, Sperrbildschirm-Kamera | nach Bedarf |
+
+**Verteilung:** Da keine Vermarktung geplant ist, wird Cappuccino nicht beworben und nicht verkauft.
+Installiert wird direkt über Xcode bzw. TestFlight (bis zu 10.000 Tester:innen per Einladung). Ein
+kostenloser App-Store-Eintrag ohne Marketing bleibt später möglich, ist aber kein Ziel.
 
 ## 12. Qualitätssicherung
 
@@ -249,15 +295,18 @@ Kein Onboarding mit mehreren Seiten. Stattdessen:
 
 | Risiko | Gegenmaßnahme |
 |---|---|
-| App-Store-Prüfung bemängelt „zu geringen Funktionsumfang“ (Richtlinie 4.2) | Hochwertige, eigenständige Filter-Engine, durchdachte Haptik/Gesten klar kommunizieren |
+| TestFlight-Builds laufen nach 90 Tagen ab | Regelmäßig neuen Build hochladen oder per Xcode direkt installieren |
 | Ruckelnde Vorschau auf älteren Geräten | Vorschau-Auflösung adaptiv senken, Korn vorberechnen |
 | Vorschau weicht vom Foto ab (Tone Mapping, HDR) | Gleiche Engine, HDR/Deep Fusion bewusst konfigurieren und testen |
+| 1:1-Maske im Sucher passt nicht exakt zum gespeicherten Ausschnitt | Zuschnitt aus gemeinsamer `AspectRatio`-Logik für Vorschau und Foto, Pixeltest |
 | Nutzer vermissen Farboriginal | Klare Kommunikation als bewusstes Konzept („wie S/W-Film“) |
 
-## 14. Offene Entscheidungen
+## 14. Getroffene Entscheidungen
 
-1. **Name** der App („Silber“ ist Arbeitstitel – Markenrecherche nötig)
-2. **Geschäftsmodell:** Einmalkauf, kostenlos, oder kostenlos mit Filterpaket per In-App-Kauf
-3. **Filterzahl:** 8 Filter im MVP oder noch radikaler 4–5?
-4. **Seitenverhältnis:** nur 4:3 oder zusätzlich 1:1 (quadratisch, Mittelformat-Anmutung)?
-5. **Frontkamera** im MVP oder später?
+| Thema | Entscheidung |
+|---|---|
+| **Name** | Cappuccino |
+| **Geschäftsmodell** | Keines – nicht kommerziell, keine Vermarktung |
+| **Filter** | 8 Filter (Neutral, Gelb, Orange, Rot, Grün, Hart, Weich, Korn) |
+| **Seitenverhältnis** | 4:3 (Standard) und zusätzlich 1:1 (quadratisch) |
+| **Kamera** | Nur Rückkamera, keine Frontkamera |
