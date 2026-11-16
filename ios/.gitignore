@@ -1,0 +1,8 @@
+# Von XcodeGen erzeugt
+*.xcodeproj
+Cappuccino/Info.plist
+# Xcode
+xcuserdata/
+DerivedData/
+build/
+*.xcuserstate

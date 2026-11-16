@@ -149,6 +149,8 @@ Filter vor dem Objektiv verändert, *wie hell* einzelne Farben im Graustufenbild
 wird das über einen **Kanalmischer** (Gewichtung von Rot, Grün, Blau) plus **Tonkurve** und optional
 **Filmkorn** umgesetzt.
 
+![Die acht Filter an einer Testszene](cappuccino-filter-vorschau.png)
+
 | # | Name | Kanalgewichtung R / G / B | Tonkurve | Korn | Wirkung |
 |---|---|---|---|---|---|
 | 1 | **Neutral** | 0,21 / 0,72 / 0,07 | linear | – | Natürliche Helligkeitsverteilung (Rec. 709 Luminanz) |
@@ -166,7 +168,7 @@ wird das über einen **Kanalmischer** (Gewichtung von Rot, Grün, Blau) plus **T
 - Die Mischung erfolgt im **linearen Farbraum** (vor der Gammakorrektur) – nur so verhalten sich die
   Filter wie echte optische Filter.
 - Das Ergebnis ist **echtes Grau** (R = G = B), keine Tonung (Sepia, Selen o. Ä.).
-- Filter werden in einer Datei (`Filters.json` oder Swift-Struct) definiert, damit sie ohne
+- Filter werden zentral in `MonoFilter.swift` definiert, damit sie ohne
   Codeänderung feinjustiert werden können.
 - Bewusst **keine Namen realer Filmsorten**, um Marken-/Rechteprobleme zu vermeiden.
 
@@ -174,34 +176,41 @@ wird das über einen **Kanalmischer** (Gewichtung von Rot, Grün, Blau) plus **T
 
 ### 7.1 Stack
 
-- **Sprache/UI:** Swift 6, SwiftUI (Sucher als `UIViewRepresentable` mit `MTKView`)
+- **Sprache/UI:** Swift (Swift-6-Compiler, Sprachmodus 5), SwiftUI (Sucher als `UIViewRepresentable` mit `MTKView`)
 - **Kamera:** AVFoundation (`AVCaptureSession`, `AVCaptureVideoDataOutput`, `AVCapturePhotoOutput`)
-- **Bildverarbeitung:** Core Image mit eigenem Metal-Kernel (`CIColorKernel`) auf der GPU
+- **Bildverarbeitung:** Core Image auf der GPU mit eingebauten Filtern (`CIColorMatrix` als Kanalmischer,
+  `CIColorCurves` als Tonkurve, `CIRandomGenerator` als Korn) – Core Image fasst sie zu einem Durchlauf
+  zusammen, ein eigener Metal-Kernel ist nicht nötig
 - **Speichern:** PhotoKit (`PHPhotoLibrary`, Berechtigung nur „Hinzufügen“)
 - **Keine Drittanbieter-Abhängigkeiten**
 - **Mindestversion:** iOS 17 (Kamerasteuerungstaste & Sperrbildschirm ab iOS 18 optional)
 
 ### 7.2 Module
 
+Umsetzung: [`ios/`](../ios/README.md)
+
 ```
 Cappuccino
-├── App/                 App-Einstieg, Lebenszyklus
+├── App/
+│   ├── CappuccinoApp     App-Einstieg
+│   └── CameraModel       Zustand: Filter, Format, Fokus, Aufnahme, Ausrichtung
 ├── Camera/
-│   ├── CameraService    Session-Konfiguration (nur Rückkamera), Fokus/Belichtung, Auslösen (Actor)
-│   └── CaptureDelegate  Empfang des Fotos in voller Auflösung
+│   └── CameraService     Session (nur Rückkamera), Fokus/Belichtung, Auslösen
 ├── Filters/
-│   ├── MonoFilter       Datenmodell: Name, Gewichte, Tonkurve, Korn
-│   ├── FilterEngine     Wendet einen MonoFilter auf ein CIImage an (rein, testbar)
-│   ├── MonoKernel.metal Kanalmischer + Tonkurve + Korn in einem GPU-Durchlauf
-│   └── AspectRatio      Format 4:3 / 1:1, berechnet den mittigen Bildausschnitt
+│   ├── MonoFilter        Die 8 Filter: Kanalgewichte, Tonkurve, Korn
+│   ├── FilterEngine      Wendet einen MonoFilter auf ein CIImage an (Vorschau und Foto)
+│   └── AspectRatio       Format 4:3 / 1:1, mittiger Bildausschnitt, Fokus-Koordinaten
 ├── Preview/
-│   └── MetalPreview     MTKView, rendert Videoframes mit aktivem Filter + Formatmaske (30–60 fps)
+│   ├── PreviewRenderer   Rendert Videoframes mit aktivem Filter in eine MTKView
+│   └── ViewfinderView    SwiftUI-Hülle, Lautstärketasten als Auslöser
 ├── Library/
-│   └── PhotoSaver       Kodierung als S/W-HEIC, Metadaten, Speichern
+│   ├── PhotoProcessor    Zuschnitt, Filter, Graustufen-HEIC, Metadaten
+│   └── PhotoLibrary      Speichern (nur Hinzufügen-Berechtigung)
 └── UI/
-    ├── CameraScreen     Der eine Bildschirm
-    ├── FilterIndicator  Name + Punkte, Ein-/Ausblenden
-    └── FormatToggle     Label „4:3“ / „1:1“
+    ├── CameraScreen      Der eine Bildschirm inkl. Gesten, Maske, Fokusrahmen
+    ├── FilterIndicator   Name + Punkte, Ein-/Ausblenden
+    ├── FormatToggle      Label „4:3“ / „1:1“
+    └── ShutterButton     Auslöser
 ```
 
 ### 7.3 Datenfluss
